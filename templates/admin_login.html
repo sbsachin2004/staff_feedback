@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="../static/styles.css">
+    <script>
+        function showPassword() {
+            let passwordField = document.getElementById("password");
+            let eyeIcon = document.getElementById("eye-icon");
+            let teddy = document.getElementById("teddy-img");
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                eyeIcon.src = "../static/eye_open.png";  // Change eye icon
+                teddy.src = "../static/teddy_one_eye_open.png"; // Open one eye
+            } else {
+                passwordField.type = "password";
+                eyeIcon.src = "../static/eye_closed.png";  // Change back
+                teddy.src = "../static/teddy_closed.png";  // Close both eyes
+            }
+        }
+
+        function onUsernameInput() {
+            let teddy = document.getElementById("teddy-img");
+            teddy.src = "../static/teddy_open.png"; // Open both eyes
+        }
+
+        function onPasswordInput() {
+            let teddy = document.getElementById("teddy-img");
+            teddy.src = "../static/teddy_closed.png"; // Close both eyes
+        }
+    </script>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        .container {
+            margin-top: 50px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            display: inline-block;
+        }
+        h2 {
+            color: #333;
+        }
+        input {
+            padding: 12px;
+            margin: 10px;
+            width: 80%;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .eye-icon {
+            cursor: pointer;
+            width: 25px;
+            margin-left: -35px;
+            position: absolute;
+        }
+        .teddy-img {
+            width: 120px;
+            margin-bottom: 20px;
+            transition: 0.3s ease-in-out;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .home-button {
+            margin-top: 10px;
+            background-color: #ff6347;
+        }
+        .home-button:hover {
+            background-color: #d64b39;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img id="teddy-img" class="teddy-img" src="../static/teddy_normal.png" alt="Teddy">
+        <h2>Admin Login</h2>
+
+        {% if error %}<p style="color: red;">{{ error }}</p>{% endif %}
+
+        <form action="/admin" method="post">
+            <input type="text" name="username" placeholder="Username" required oninput="onUsernameInput()">
+            <br>
+            <div style="position: relative; display: inline-block;">
+                <input type="password" id="password" name="password" placeholder="Password" required oninput="onPasswordInput()">
+                <img id="eye-icon" class="eye-icon" src="../static/eye_closed.png" alt="Toggle Eye" onclick="showPassword()">
+            </div>
+            <br>
+            <button type="submit">Login</button>
+        </form>
+        
+        <a href="/"><button class="home-button">Home</button></a>
+    </div>
+</body>
+</html>

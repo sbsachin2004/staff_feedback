@@ -1,0 +1,41 @@
+<!-- student_feedback.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Feedback</title>
+    <link rel="stylesheet" href="../static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Submit Your Feedback</h2>
+        <form action="/student_feedback" method="post">
+            <select name="department" required>
+                <option value="">Select Department</option>
+                <option value="CSE">CSE</option>
+                <option value="ECE">ECE</option>
+                <option value="MECH">MECH</option>
+            </select>
+            <select name="year" required>
+                <option value="">Select Year</option>
+                <option value="1st Year">1st Year</option>
+                <option value="2nd Year">2nd Year</option>
+                <option value="3rd Year">3rd Year</option>
+                <option value="4th Year">4th Year</option>
+            </select>
+            <select name="staff_name" required>
+                <option value="">Select Staff</option>
+                {% for staff in staff_list %}
+                    <option value="{{ staff[1] }}">{{ staff[1] }}</option>
+                {% endfor %}
+            </select>
+            <input type="text" name="subject" placeholder="Enter Subject" required>
+            <input type="number" name="rating" min="1" max="5" placeholder="Rating (1-5)" required>
+            <textarea name="feedback" placeholder="Enter your feedback" required></textarea>
+            <button type="submit">Submit Feedback</button>
+        </form>
+        <a href="/"><button>Home</button></a>
+    </div>
+</body>
+</html>
