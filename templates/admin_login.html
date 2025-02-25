@@ -13,18 +13,18 @@
 
             if (passwordField.type === "password") {
                 passwordField.type = "text";
-                eyeIcon.src = "../static/eye_open.png";  // Change eye icon
-                teddy.src = "../static/teddy_one_eye_open.png"; // Open one eye
+                eyeIcon.src = "../static/eye_open.png";  // Open eye icon
+                teddy.src = "../static/teddy_one_eye_open.png"; // One eye open
             } else {
                 passwordField.type = "password";
-                eyeIcon.src = "../static/eye_closed.png";  // Change back
-                teddy.src = "../static/teddy_closed.png";  // Close both eyes
+                eyeIcon.src = "../static/eye_closed.png";  // Closed eye icon
+                teddy.src = "../static/teddy_closed.png";  // Both eyes closed
             }
         }
 
         function onUsernameInput() {
             let teddy = document.getElementById("teddy-img");
-            teddy.src = "../static/teddy_open.png"; // Open both eyes
+            teddy.src = "../static/teddy_open.png"; // Both eyes open
         }
 
         function onPasswordInput() {
@@ -35,38 +35,50 @@
     <style>
         body {
             text-align: center;
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .container {
-            margin-top: 50px;
             background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
             display: inline-block;
         }
         h2 {
             color: #333;
+            font-size: 24px;
+            font-weight: bold;
         }
         input {
             padding: 12px;
-            margin: 10px;
-            width: 80%;
+            margin: 10px 0;
+            width: 100%;
             border: 2px solid #ccc;
             border-radius: 8px;
             font-size: 16px;
+            box-sizing: border-box;
+        }
+        .password-container {
+            position: relative;
+            width: 100%;
         }
         .eye-icon {
             cursor: pointer;
             width: 25px;
-            margin-left: -35px;
             position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
         }
         .teddy-img {
             width: 120px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             transition: 0.3s ease-in-out;
         }
         button {
@@ -74,16 +86,19 @@
             color: white;
             padding: 12px 20px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
+            width: 100%;
+            margin-top: 10px;
+            transition: all 0.3s ease;
         }
         button:hover {
             background-color: #45a049;
         }
         .home-button {
-            margin-top: 10px;
             background-color: #ff6347;
+            margin-top: 10px;
         }
         .home-button:hover {
             background-color: #d64b39;
@@ -99,12 +114,12 @@
 
         <form action="/admin" method="post">
             <input type="text" name="username" placeholder="Username" required oninput="onUsernameInput()">
-            <br>
-            <div style="position: relative; display: inline-block;">
+            
+            <div class="password-container">
                 <input type="password" id="password" name="password" placeholder="Password" required oninput="onPasswordInput()">
                 <img id="eye-icon" class="eye-icon" src="../static/eye_closed.png" alt="Toggle Eye" onclick="showPassword()">
             </div>
-            <br>
+
             <button type="submit">Login</button>
         </form>
         

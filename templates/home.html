@@ -1,17 +1,105 @@
-<!-- home.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff Feedback System</title>
+    <title>SACHIN S B FEEDBACK SYSTEM</title>
     <link rel="stylesheet" href="../static/styles.css">
+    <style>
+        /* Background Image */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: url('../static/bg.jpg') no-repeat center center/cover;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Stylish Title */
+        h1 {
+            font-size: 55px;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.5);
+            color: #ffdd00;
+        }
+
+        /* Stylish Buttons */
+        .btn {
+            display: inline-block;
+            text-decoration: none;
+            padding: 15px 40px;
+            margin: 15px;
+            font-size: 22px;
+            font-weight: bold;
+            border-radius: 50px;
+            border: none;
+            color: white;
+            transition: all 0.3s ease-in-out;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+
+        .btn1 {
+            background: linear-gradient(90deg, #0072ff, #00c6ff);
+        }
+
+        .btn2 {
+            background: linear-gradient(90deg, #ff416c, #ff4b2b);
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0px 8px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Date & Time */
+        #datetime {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 10px;
+            display: inline-block;
+            background: rgba(0, 0, 0, 0.7);
+            color: #ffdd00;
+        }
+
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            width: 100%;
+            font-size: 14px;
+            color: #ffffff;
+            opacity: 0.8;
+        }
+    </style>
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            const formattedDate = now.toLocaleDateString();
+            const formattedTime = now.toLocaleTimeString();
+            document.getElementById("datetime").innerHTML = formattedDate + " | " + formattedTime;
+        }
+        setInterval(updateDateTime, 1000);
+    </script>
 </head>
-<body>
+<body onload="updateDateTime()">
     <div class="container">
-        <h1>Welcome to Staff Feedback System</h1>
-        <a href="/admin"><button>Admin Login</button></a>
-        <a href="/student_feedback"><button>Give Feedback</button></a>
+        <h1>SACHIN S B FEEDBACK SYSTEM</h1>
+        <a href="/admin" class="btn btn1">Admin Login</a>
+        <a href="/student_feedback" class="btn btn2">Give Feedback</a>
+        <div id="datetime"></div>
+    </div>
+    <div class="footer">
+        &copy; sachinsb 2025
     </div>
 </body>
 </html>
