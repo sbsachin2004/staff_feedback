@@ -1,33 +1,46 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-import sqlite3
+import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
 
-# Initialize Database
-def init_db():
-    conn = sqlite3.connect("database.db")
-    cursor = conn.cursor()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS admin (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                        username TEXT, 
-                        password TEXT)''')
-    
-    cursor.execute('''CREATE TABLE IF NOT EXISTS staff (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                        name TEXT, 
-                        department TEXT, 
-                        subject TEXT)''')
+# MySQL Database Connection
+def get_db_connection():
+    return mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="root",
+        database="student_feedback_db"
+    )
 
+# Initialize MySQL Database
+def init_db():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Admin Table
+    cursor.execute('''CREATE TABLE IF NOT EXISTS admin (
+                        id INT AUTO_INCREMENT PRIMARY KEY, 
+                        username VARCHAR(255) UNIQUE NOT NULL, 
+                        password VARCHAR(512) NOT NULL)''')
+
+    # Staff Table
+    cursor.execute('''CREATE TABLE IF NOT EXISTS staff (
+                        id INT AUTO_INCREMENT PRIMARY KEY, 
+                        name VARCHAR(255) NOT NULL, 
+                        department VARCHAR(255) NOT NULL, 
+                        subject VARCHAR(255) NOT NULL)''')
+
+    # Feedback Table
     cursor.execute('''CREATE TABLE IF NOT EXISTS feedback (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                        department TEXT, 
-                        year TEXT, 
-                        staff_name TEXT, 
-                        subject TEXT,
-                        rating INTEGER, 
-                        feedback TEXT)''')
+                        id INT AUTO_INCREMENT PRIMARY KEY, 
+                        department VARCHAR(255) NOT NULL, 
+                        year VARCHAR(10) NOT NULL, 
+                        staff_name VARCHAR(255) NOT NULL, 
+                        subject VARCHAR(255) NOT NULL,
+                        rating INT NOT NULL, 
+                        feedback TEXT NOT NULL)''')
 
     conn.commit()
     conn.close()
@@ -46,9 +59,9 @@ def admin_login():
         username = request.form["username"]
         password = request.form["password"]
 
-        conn = sqlite3.connect("database.db")
+        conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute("SELECT password FROM admin WHERE username = ?", (username,))
+        cursor.execute("SELECT password FROM admin WHERE username = %s", (username,))
         result = cursor.fetchone()
         conn.close()
 
@@ -66,7 +79,7 @@ def admin_dashboard():
     if "admin" not in session:
         return redirect(url_for("admin_login"))
 
-    conn = sqlite3.connect("database.db")
+    conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM feedback")
     feedback_list = cursor.fetchall()
@@ -88,13 +101,13 @@ def create_admin():
     hashed_password = generate_password_hash(new_password)
 
     try:
-        conn = sqlite3.connect("database.db")
+        conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO admin (username, password) VALUES (?, ?)", (new_username, hashed_password))
+        cursor.execute("INSERT INTO admin (username, password) VALUES (%s, %s)", (new_username, hashed_password))
         conn.commit()
         conn.close()
         return render_template("admin_dashboard.html", message="Admin created successfully!")
-    except sqlite3.IntegrityError:
+    except mysql.connector.IntegrityError:
         return render_template("admin_dashboard.html", error="Username already exists!")
 
 # Add Staff
@@ -107,9 +120,9 @@ def add_staff():
     department = request.form["department"]
     subject = request.form["subject"]
 
-    conn = sqlite3.connect("database.db")
+    conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO staff (name, department, subject) VALUES (?, ?, ?)", (name, department, subject))
+    cursor.execute("INSERT INTO staff (name, department, subject) VALUES (%s, %s, %s)", (name, department, subject))
     conn.commit()
     conn.close()
     
@@ -121,9 +134,9 @@ def delete_feedback(id):
     if "admin" not in session:
         return redirect(url_for("admin_login"))
 
-    conn = sqlite3.connect("database.db")
+    conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM feedback WHERE id=?", (id,))
+    cursor.execute("DELETE FROM feedback WHERE id = %s", (id,))
     conn.commit()
     conn.close()
     
@@ -132,7 +145,7 @@ def delete_feedback(id):
 # Student Feedback
 @app.route("/student_feedback", methods=["GET", "POST"])
 def student_feedback():
-    conn = sqlite3.connect("database.db")
+    conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM staff")
     staff_list = cursor.fetchall()
@@ -146,9 +159,9 @@ def student_feedback():
         rating = request.form["rating"]
         feedback = request.form["feedback"]
 
-        conn = sqlite3.connect("database.db")
+        conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO feedback (department, year, staff_name, subject, rating, feedback) VALUES (?, ?, ?, ?, ?, ?)", 
+        cursor.execute("INSERT INTO feedback (department, year, staff_name, subject, rating, feedback) VALUES (%s, %s, %s, %s, %s, %s)", 
                        (department, year, staff_name, subject, rating, feedback))
         conn.commit()
         conn.close()
