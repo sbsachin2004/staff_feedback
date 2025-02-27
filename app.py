@@ -8,10 +8,11 @@ app.secret_key = "your_secret_key"
 # MySQL Database Connection
 def get_db_connection():
     return mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="root",
-        database="student_feedback_db"
+        host=os.getenv("DB_HOST", "mysql://root:zCepfysNNWiXYLbSVTLHuwqKHzSDayAN@trolley.proxy.rlwy.net:24149/railway"),
+        user=os.getenv("DB_USER", "root"),
+        password=os.getenv("DB_PASSWORD", "root"),
+        database=os.getenv("DB_NAME", "student_feedback_db"),
+        port=3306
     )
 
 # Initialize MySQL Database
