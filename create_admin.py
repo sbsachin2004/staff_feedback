@@ -2,7 +2,7 @@ import mysql.connector
 from werkzeug.security import generate_password_hash
 
 # Database Configuration (Update with your MySQL details)
-DB_HOST = "mysql://root:zCepfysNNWiXYLbSVTLHuwqKHzSDayAN@trolley.proxy.rlwy.net:24149/railway"
+DB_HOST = "localhost"
 DB_USER = "root"  # Change if needed
 DB_PASSWORD = "root"  # Update with your MySQL password
 DB_NAME = "student_feedback_db"  # Update to match your database
