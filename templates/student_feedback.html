@@ -85,9 +85,10 @@
             <select name="staff_name" required>
                 <option value="">Select Staff</option>
                 {% for staff in staff_list %}
-                    <option value="{{ staff[1] }}">{{ staff[1] }}</option>
+                    <option value="{{ staff['name'] }}">{{ staff['name'] }}</option>
                 {% endfor %}
             </select>
+            
             <input type="text" name="subject" placeholder="Enter Subject" required>
             <select name="rating" required>
                 <option value="">Select Rating</option>

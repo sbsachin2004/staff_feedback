@@ -1,80 +1,56 @@
-import mysql.connector
-from mysql.connector import Error
+import json
+import os
 from werkzeug.security import generate_password_hash
 
-# MySQL Connection Function
-def connect_db():
-    try:
-        conn = mysql.connector.connect(
-            host="localhost",   # Change if using a remote MySQL server
-            user="root",        # Replace with your MySQL username
-            password="root",  # Replace with your MySQL password
-            database="student_feedback_db"   # Ensure this database exists
-        )
-        return conn
-    except Error as e:
-        print(f"Error: {e}")
-        return None
+DATA_FOLDER = "data"
+ADMIN_FILE = os.path.join(DATA_FOLDER, "admin.json")
+STAFF_FILE = os.path.join(DATA_FOLDER, "staff.json")
+FEEDBACK_FILE = os.path.join(DATA_FOLDER, "feedback.json")
 
-# Initialize Database and Tables
+# Ensure data folder exists
+os.makedirs(DATA_FOLDER, exist_ok=True)
+
+def read_json(file_path, default_data=[]):
+    if os.path.exists(file_path):
+        with open(file_path, "r") as file:
+            return json.load(file)
+    return default_data
+
+def write_json(file_path, data):
+    with open(file_path, "w") as file:
+        json.dump(data, file, indent=4)
+
+# Initialize JSON storage if empty
+if not os.path.exists(ADMIN_FILE):
+    write_json(ADMIN_FILE, [])
+if not os.path.exists(STAFF_FILE):
+    write_json(STAFF_FILE, [])
+if not os.path.exists(FEEDBACK_FILE):
+    write_json(FEEDBACK_FILE, [])
+
 def init_db():
-    conn = connect_db()
-    if conn is None:
-        return
-
-    cursor = conn.cursor()
-    
-    # Create Admin Table
-    cursor.execute('''CREATE TABLE IF NOT EXISTS admin (
-                        id INT AUTO_INCREMENT PRIMARY KEY, 
-                        username VARCHAR(255) UNIQUE NOT NULL, 
-                        password VARCHAR(512) NOT NULL)''')
-
-    # Create Staff Table
-    cursor.execute('''CREATE TABLE IF NOT EXISTS staff (
-                        id INT AUTO_INCREMENT PRIMARY KEY, 
-                        name VARCHAR(255), 
-                        department VARCHAR(255), 
-                        subject VARCHAR(255))''')
-
-    # Create Feedback Table
-    cursor.execute('''CREATE TABLE IF NOT EXISTS feedback (
-                        id INT AUTO_INCREMENT PRIMARY KEY, 
-                        department VARCHAR(255), 
-                        year VARCHAR(50), 
-                        staff_name VARCHAR(255), 
-                        subject VARCHAR(255),
-                        rating INT, 
-                        feedback TEXT)''')
-
-    conn.commit()
-    cursor.close()
-    conn.close()
+    """Initialize the JSON database files."""
+    write_json(ADMIN_FILE, read_json(ADMIN_FILE, []))
+    write_json(STAFF_FILE, read_json(STAFF_FILE, []))
+    write_json(FEEDBACK_FILE, read_json(FEEDBACK_FILE, []))
     print("Database initialized successfully!")
 
-# Create Admin User
 def create_admin():
-    conn = connect_db()
-    if conn is None:
-        return
-
-    cursor = conn.cursor()
-
+    """Create an admin user and store it in the JSON database."""
+    admins = read_json(ADMIN_FILE)
+    
     username = input("Enter Admin Username: ")
     password = input("Enter Admin Password: ")
     hashed_password = generate_password_hash(password)
-
-    try:
-        cursor.execute("INSERT INTO admin (username, password) VALUES (%s, %s)", (username, hashed_password))
-        conn.commit()
-        print("Admin user created successfully!")
-    except mysql.connector.IntegrityError:
-        print("Username already exists! Try a different one.")
     
-    cursor.close()
-    conn.close()
+    if any(admin["username"] == username for admin in admins):
+        print("Username already exists! Try a different one.")
+        return
+    
+    admins.append({"username": username, "password": hashed_password})
+    write_json(ADMIN_FILE, admins)
+    print("Admin user created successfully!")
 
-# Run the script
 if __name__ == "__main__":
-    init_db()  # Initialize the database tables
+    init_db()  # Initialize the database files
     create_admin()  # Create an admin user
