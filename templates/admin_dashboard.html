@@ -173,6 +173,27 @@
             </form>
         </div>
 
+        <h3>All Staff</h3>
+<div class="feedback-container">
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Subject</th>
+            <th>Action</th>
+        </tr>
+        {% for staff in staff_list %}
+        <tr>
+            <td>{{ staff['name'] }}</td>
+            <td>{{ staff['department'] }}</td>
+            <td>{{ staff['subject'] }}</td>
+            <td><a href="/admin/delete_staff/{{ staff['name'] }}" class="button">Delete</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+
         {% if message %}
             <p class="message">{{ message }}</p>
         {% endif %}

@@ -100,6 +100,19 @@ def add_staff():
     
     return redirect(url_for("admin_dashboard"))
 
+# Delete Staff
+@app.route("/admin/delete_staff/<name>")
+def delete_staff(name):
+    if "admin" not in session:
+        return redirect(url_for("admin_login"))
+
+    staff_list = read_json(STAFF_FILE)
+    staff_list = [s for s in staff_list if s["name"] != name]
+    write_json(STAFF_FILE, staff_list)
+
+    return redirect(url_for("admin_dashboard"))
+
+
 # Delete Feedback
 @app.route("/admin/delete_feedback/<int:id>")
 def delete_feedback(id):
